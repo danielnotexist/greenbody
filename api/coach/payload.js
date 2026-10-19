@@ -246,7 +246,7 @@ export function build(S, uid, opts = {}) {
     task: opts.kind === 'review' ? 'review' : 'create',
     meta: {
       profile: handle(uid),
-      lang: S.lang || 'en',
+      lang: S.lang || 'he',
       unit: S.unit || 'kg',
       effortScale: effortOf(S),
       today: iso(new Date())

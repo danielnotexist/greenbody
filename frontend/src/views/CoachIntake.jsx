@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useStore } from '../store/useStore.js'
 import { useUI } from '../store/useUI.js'
 import { t } from '../lib/i18n.js'
-import { DAYN } from '../lib/format.js'
+import { DAYS, weekOrder } from '../lib/format.js'
 import { EXDB } from '../lib/exercises.js'
 import { emptyCoach, coachAvailable } from '../lib/coach.js'
 import { requestPlan } from '../lib/coach-api.js'
@@ -87,7 +87,7 @@ export default function CoachIntake() {
   return <div className="narrow">
     <div className="hdr">
       <button className="iconbtn" onClick={() => step ? setStep(step - 1) : nav('/coach')} aria-label={t('Back')}><Icon name="chevronLeft" /></button>
-      <div style={{ flex: 1, marginLeft: 10 }}>
+      <div style={{ flex: 1, marginInlineStart: 10 }}>
         <h1>{editing ? t('Coach profile') : t('Your plan')}</h1>
         <div className="sub">{t('Step {0} of {1}', step + 1, STEPS.length)}</div>
       </div>
@@ -125,9 +125,9 @@ export default function CoachIntake() {
           value={p.daysPerWeek} onChange={v => set({ daysPerWeek: v })} />
         <div className="muted small" style={{ margin: '14px 0 8px' }}>{t('Which days suit you? (optional)')}</div>
         <div className="week">
-          {[1, 2, 3, 4, 5, 6, 0].map(d => <div key={d} className={'wday' + (p.preferredDays.includes(d) ? ' today' : '')}
+          {weekOrder().map(d => <div key={d} className={'wday' + (p.preferredDays.includes(d) ? ' today' : '')}
             onClick={() => toggleDay(d)} style={{ cursor: 'pointer' }}>
-            <div className="lbl">{t(DAYN[d]).slice(0, 2)}</div>
+            <div className="lbl">{t(DAYS[d])}</div>
             <div className={'dot' + (p.preferredDays.includes(d) ? ' plan' : '')} />
           </div>)}
         </div>

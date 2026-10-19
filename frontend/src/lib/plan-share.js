@@ -1,7 +1,7 @@
 // Share a weekly plan.
 //
 // Two jobs:
-//  1. A small, self-contained file a friend can import into THEIR openGym — just the
+//  1. A small, self-contained file a friend can import into THEIR GreenBody — just the
 //     routines + the week schedule + the custom exercises those routines use. It never
 //     carries workouts, weigh-ins or settings, and importing MERGES (adds routines with
 //     fresh ids) so nothing the friend already has is touched.
@@ -10,11 +10,11 @@
 
 import { EXIDX } from './exercises.js'
 import { modeOf, fmtSec } from './history.js'
-import { uid, todayISO, DAYN, fmtNum, exCount } from './format.js'
-import { t } from './i18n.js'
+import { uid, todayISO, DAYN, fmtNum, exCount, weekOrder } from './format.js'
+import { t, nameFor, getLang, isRTL } from './i18n.js'
 
 const PLAN_FMT = 1
-const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // Mon-first, matching the Plan screen
+const WEEK_ORDER = [1, 2, 3, 4, 5, 6, 0]   // every weekday, for the file — display order is weekOrder()
 
 // Keep only the meaningful config fields, so the file stays small and readable.
 function cleanEx(e) {
@@ -68,7 +68,7 @@ export function buildPlanBundle(S, name) {
 export function parsePlan(raw) {
   const data = typeof raw === 'string' ? JSON.parse(raw) : raw
   if (!data || !data.opengym_plan || !Array.isArray(data.routines)) {
-    throw new Error(t('this isn’t an openGym plan file'))
+    throw new Error(t('this isn’t a GreenBody plan file'))
   }
   const customEx = (Array.isArray(data.customEx) ? data.customEx : []).filter(c => c && c.id)
   const known = new Set(customEx.map(c => c.id))
@@ -141,7 +141,7 @@ function scheme(e, unit) {
   const sets = e.sets || 1
   const mode = modeOf(e)
   if (mode === 'cardio') {
-    const body = `${e.min || 20} min @ ${fmtNum(e.speed || 8)} km/h`
+    const body = t('{0} min @ {1} km/h', e.min || 20, fmtNum(e.speed || 8))
     return sets > 1 ? `${sets} × ${body}` : body
   }
   let s = mode === 'time' ? `${sets} × ${fmtSec(e.sec || 45)}` : `${sets} × ${e.reps ?? 10}`
@@ -164,8 +164,8 @@ function routineHTML(r, unit) {
   const rows = units(r.ex).map(u => {
     const items = u.map(e => {
       const ex = EXIDX[e.id]
-      const name = ex ? ex.n : t('Unknown exercise')
-      const part = ex && ex.bp && ex.bp !== 'cardio' ? `<span class="part">${esc(ex.bp)}</span>` : ''
+      const name = ex ? nameFor(ex) : t('Unknown exercise')
+      const part = ex && ex.bp && ex.bp !== 'cardio' ? `<span class="part">${esc(t(ex.bp))}</span>` : ''
       return `<div class="ex"><div class="ex-n">${esc(name)}${part}</div><div class="ex-s">${esc(scheme(e, unit))}</div></div>`
     }).join('')
     return u.length > 1
@@ -180,7 +180,7 @@ function routineHTML(r, unit) {
 }
 
 function weekHTML(S) {
-  const rows = WEEK_ORDER.map(d => {
+  const rows = weekOrder().map(d => {   // same first day as the Plan screen
     const r = S.routines.find(x => x.id === S.week?.[d])
     const val = r ? esc(r.name) : `<span class="rest">${esc(t('Rest'))}</span>`
     return `<div class="w-row"><div class="w-day">${esc(t(DAYN[d]))}</div><div class="w-r">${val}</div></div>`
@@ -189,27 +189,28 @@ function weekHTML(S) {
 }
 
 /** Full self-contained HTML for the print/PDF view. */
-export function planPrintHTML(S, owner) {
+export function planPrintHTML(S, owner, extraCSS = '') {
   const unit = S.unit || 'kg'
   const routines = (S.routines || []).filter(r => r.ex && r.ex.length)
   const body = routines.length
     ? routines.map(r => routineHTML(r, unit)).join('')
     : `<p class="none">${esc(t('No routines yet.'))}</p>`
   const sub = [owner, todayISO()].filter(Boolean).map(esc).join(' · ')
-  return `<!doctype html><html><head><meta charset="utf-8">
+  const lang = getLang()
+  return `<!doctype html><html lang="${lang}" dir="${isRTL(lang) ? 'rtl' : 'ltr'}"><head><meta charset="utf-8">
 <title>${esc(t('Weekly Training Plan'))}</title>
-<style>
+<style>${extraCSS}
   @page { margin: 16mm 15mm; }
   * { box-sizing: border-box; }
   html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   body {
     margin: 0; color: #16181d; background: #fff;
-    font: 14px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font: 14px/1.5 "Heebo Variable", "Rubik Variable", -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     font-variant-numeric: tabular-nums;
   }
   .doc { max-width: 720px; margin: 0 auto; }
   header { border-bottom: 2px solid #16181d; padding-bottom: 12px; margin-bottom: 20px; }
-  header .kicker { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #6a7a3a; font-weight: 700; }
+  header .kicker { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: #15803d; font-weight: 700; }
   header h1 { font-size: 27px; letter-spacing: -.02em; margin: 3px 0 0; }
   header .sub { color: #6b7180; font-size: 13px; margin-top: 4px; }
 
@@ -231,19 +232,19 @@ export function planPrintHTML(S, owner) {
   .ex { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; padding: 6px 0; break-inside: avoid; page-break-inside: avoid; }
   .ex + .ex, .ss + .ex, .ex + .ss { border-top: 1px solid #f2f3f6; }
   .ex-n { text-transform: capitalize; font-weight: 500; }
-  .ex-n .part { text-transform: capitalize; color: #9aa0ae; font-weight: 400; font-size: 12px; margin-left: 8px; }
+  .ex-n .part { text-transform: capitalize; color: #9aa0ae; font-weight: 400; font-size: 12px; margin-inline-start: 8px; }
   .ex-s { color: #3d424e; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .ex.empty, .none { color: #a2a8b6; }
 
-  .ss { break-inside: avoid; page-break-inside: avoid; border-left: 3px solid #cfe08a; padding-left: 12px; margin: 4px 0; }
-  .ss-tag { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #6a7a3a; font-weight: 700; padding-top: 4px; }
+  .ss { break-inside: avoid; page-break-inside: avoid; border-inline-start: 3px solid #86efac; padding-inline-start: 12px; margin: 4px 0; }
+  .ss-tag { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #15803d; font-weight: 700; padding-top: 4px; }
   .ss .ex:first-of-type { padding-top: 2px; }
 
   footer { margin-top: 26px; padding-top: 10px; border-top: 1px solid #eef0f4; color: #a2a8b6; font-size: 11px; text-align: center; }
 </style></head>
 <body><div class="doc">
   <header>
-    <div class="kicker">openGym</div>
+    <div class="kicker">GreenBody</div>
     <h1>${esc(t('Weekly Training Plan'))}</h1>
     ${sub ? `<div class="sub">${sub}</div>` : ''}
   </header>
@@ -251,8 +252,24 @@ export function planPrintHTML(S, owner) {
   ${weekHTML(S)}
   <h3 class="block">${esc(t('Routines'))}</h3>
   ${body}
-  <footer>${esc(t('Made with openGym'))} · opengym.duarte-santos.ch</footer>
+  <footer>${esc(t('Made with GreenBody'))}</footer>
 </div></body></html>`
+}
+
+// The app's @font-face rules, with every url() made absolute — the print iframe is its own
+// document and would otherwise fall back to a system face that may lack Hebrew glyphs.
+function fontFaceCSS() {
+  let css = ''
+  for (const sheet of document.styleSheets) {
+    let rules
+    try { rules = sheet.cssRules } catch (e) { continue }   // a cross-origin sheet
+    const base = sheet.href || document.baseURI
+    for (const r of rules) {
+      if (r.constructor?.name !== 'CSSFontFaceRule') continue
+      css += r.cssText.replace(/url\((['"]?)([^'")]+)\1\)/g, (m, q, u) => `url("${new URL(u, base).href}")`) + '\n'
+    }
+  }
+  return css
 }
 
 /**
@@ -274,8 +291,9 @@ export function printPlan(S, owner) {
     try { w.print() } catch (e) { cleanup() }
   }
   const doc = ifr.contentWindow.document
-  doc.open(); doc.write(planPrintHTML(S, owner)); doc.close()
-  // Give the iframe a tick to lay out before printing.
-  if (doc.readyState === 'complete') setTimeout(run, 120)
-  else ifr.onload = () => setTimeout(run, 120)
+  doc.open(); doc.write(planPrintHTML(S, owner, fontFaceCSS())); doc.close()
+  // Give the iframe a tick to lay out — and its fonts to arrive — before printing.
+  const go = () => (doc.fonts ? doc.fonts.ready : Promise.resolve()).then(() => setTimeout(run, 120))
+  if (doc.readyState === 'complete') go()
+  else ifr.onload = go
 }

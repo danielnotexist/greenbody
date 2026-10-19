@@ -1,14 +1,23 @@
 // Backend + WebAuthn helpers (ported from the vanilla app).
+import { t } from './i18n.js'
 export const IS_APPLE = /iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)
 export const IS_ANDROID = /Android/.test(navigator.userAgent)
 export const BIO = IS_APPLE ? 'Face ID / Touch ID' : IS_ANDROID ? 'fingerprint or face unlock' : 'your fingerprint, face or PIN'
 export const VAULT = IS_APPLE ? 'iCloud Keychain' : IS_ANDROID ? 'Google Password Manager' : 'your password manager'
 export const webauthnOK = () => !!(window.PublicKeyCredential && navigator.credentials)
 
+// The server answers in English; its messages are i18n keys like any other string, so a
+// failed sign-in reads in the profile's language. Unknown messages pass through unchanged.
+function serverError(msg) {
+  if (!msg) return msg
+  const vf = /^verification failed: (.*)$/.exec(msg)
+  return vf ? t('Verification failed: {0}', vf[1]) : t(msg)
+}
+
 export async function api(path, opts) {
   const r = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opts))
   const data = await r.json().catch(() => ({}))
-  if (!r.ok) { const e = new Error(data.error || ('HTTP ' + r.status)); e.status = r.status; throw e }
+  if (!r.ok) { const e = new Error(serverError(data.error) || ('HTTP ' + r.status)); e.status = r.status; throw e }
   return data
 }
 

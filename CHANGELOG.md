@@ -2,6 +2,23 @@
 
 ## Unreleased
 
+### GreenBody — עברית מלאה
+
+openGym becomes **GreenBody**: a Hebrew-first app with a green identity.
+
+- 🇮🇱 **The whole app in Hebrew, right to left.** Every screen, the admin dashboard, server
+  errors and push notifications. Layout, arrows, switches, segmented controls and sheets
+  mirror; charts and the year heatmap keep reading oldest → newest.
+- 🏋️ **All 1,324 exercises in Hebrew** — names and step-by-step instructions, translated in
+  this repo (the upstream dataset has no Hebrew). Search matches Hebrew and English names.
+- 📅 **Weeks start on Sunday** in Hebrew — week strip, plan, calendar, heatmap and the printout.
+- 🔤 **Heebo and Rubik**, bundled with the app (no font CDN): Heebo for text, Rubik for titles
+  and the numbers you read mid-set.
+- 🌿 **New name, logo and icons** — the leaf-and-dumbbell mark, a two-tone green wordmark, and
+  regenerated web, Android and iOS icons and splash screens.
+- 🤖 The Coach writes in Hebrew for Hebrew profiles. Hebrew is the default for new profiles;
+  the other 11 languages are still in Settings and gained the few strings that were English-only.
+
 ### The AI Coach
 
 openGym could always progress a plan. It could never *write* one, and it never looked at the

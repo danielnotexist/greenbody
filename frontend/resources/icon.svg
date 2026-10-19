@@ -1,13 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 512 512">
-  <!-- App-icon source == the PWA icon (public/icon-512.png), geometry traced 1:1 so the
-       native app, the home-screen PWA and the website favicon all show the same icon.
-       Generate platform icons + splash via `npx @capacitor/assets generate` — docs/MOBILE.md. -->
-  <rect width="512" height="512" fill="#0c0e12"/>
-  <g fill="#a3e635">
-    <rect x="80" y="242" width="352" height="28"/>
-    <rect x="80" y="199" width="36" height="114"/>
-    <rect x="131" y="169" width="47" height="174"/>
-    <rect x="334" y="169" width="47" height="174"/>
-    <rect x="396" y="199" width="36" height="114"/>
+  <!-- GreenBody app icon — the source for public/icon-*.png and the native icons/splash.
+       Generate platform icons + splash via `npx @capacitor/assets generate` — docs/MOBILE.md.
+       Everything that matters sits inside the central 80% so a maskable crop never clips it. -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0" stop-color="#0f2a1a"/>
+      <stop offset="1" stop-color="#06110b"/>
+    </radialGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6ee7a0"/>
+      <stop offset="1" stop-color="#16a34a"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#bbf7d0"/>
+      <stop offset="1" stop-color="#4ade80"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <g transform="translate(0 20)">
+  <!-- leaf sprouting from the bar -->
+  <path d="M256 238c-2-46 22-86 74-104 6 52-20 92-74 104z" fill="url(#leaf)"/>
+  <path d="M256 238c8-30 26-58 56-82" fill="none" stroke="#0f2a1a" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+  <!-- dumbbell -->
+  <g fill="url(#g)">
+    <rect x="96" y="243" width="320" height="26" rx="13"/>
+    <rect x="86" y="206" width="34" height="100" rx="14"/>
+    <rect x="128" y="178" width="44" height="156" rx="16"/>
+    <rect x="340" y="178" width="44" height="156" rx="16"/>
+    <rect x="392" y="206" width="34" height="100" rx="14"/>
+  </g>
   </g>
 </svg>
