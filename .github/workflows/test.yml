@@ -35,9 +35,15 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: |
+            frontend/package-lock.json
+            api/package-lock.json
       - run: npm ci
         working-directory: frontend
+      # coach.test.js imports the server's own payload code, which pulls in the api's
+      # provider SDKs — so the api's dependencies have to be there for the frontend tests too.
+      - run: npm ci
+        working-directory: api
       - run: npm test
         working-directory: frontend
       # A broken import or bad JSX fails the build long before any test covers it.
@@ -53,8 +59,12 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      # No dependencies to install: the Coach tests run on node:test and drive the in-repo
-      # fixture provider, so the whole job graph works without an AI account or a network.
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+      # The Coach tests run on node:test and drive the in-repo fixture provider, so they need
+      # no AI account or network — but the modules they import do load the provider SDKs.
+      - run: npm ci
+        working-directory: api
       - run: npm test
         working-directory: api
       # The API's copy of the exercise catalogue is generated and committed. A dataset change
