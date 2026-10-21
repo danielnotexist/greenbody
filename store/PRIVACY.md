@@ -37,7 +37,7 @@ WhatsApp). אנחנו לא מקבלים עותק.
 
 ## יצירת קשר
 
-שאלות על פרטיות: https://github.com/danielnotexist404/nircohen/issues
+שאלות על פרטיות: https://github.com/danielnotexist/greenbody/issues
 
 ---
 
@@ -52,4 +52,4 @@ receive a copy. Exercise images load from cdn.jsdelivr.net, which, like any imag
 the device's IP address; no information about you or your training is sent. Workout reminders
 are local notifications scheduled by the phone itself.
 
-Questions: https://github.com/danielnotexist404/nircohen/issues
+Questions: https://github.com/danielnotexist/greenbody/issues

@@ -121,7 +121,7 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://github.com/danielnotexist404/nircohen greenbody
+git clone https://github.com/danielnotexist/greenbody
 cd greenbody
 cp .env.example .env
 docker compose up -d --build

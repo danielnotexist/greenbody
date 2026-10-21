@@ -14,7 +14,7 @@
 GreenBody בנוי על openGym, שמופץ ברישיון AGPL. היוצר נתן אישור מפורש להפיץ את האפליקציה
 בחנויות ([NOTICE.md](../NOTICE.md)), **בתנאי שקוד המקור זמין לכולם**. לכן:
 
-GitHub ← הריפו `nircohen` ← **Settings** ← למטה **Danger Zone** ← **Change visibility** ← **Public**.
+GitHub ← הריפו `greenbody` ← **Settings** ← למטה **Danger Zone** ← **Change visibility** ← **Public**.
 
 זה גם מה שהופך את קישור מדיניות הפרטיות לנגיש — Apple בודקת שהוא נפתח.
 
@@ -34,7 +34,7 @@ GitHub ← הריפו `nircohen` ← **Settings** ← למטה **Danger Zone** �
 בטרמינל:
 
 ```sh
-git clone https://github.com/danielnotexist404/nircohen.git greenbody
+git clone https://github.com/danielnotexist/greenbody.git
 cd greenbody/frontend
 npm ci
 npm run build:mobile

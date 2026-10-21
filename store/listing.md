@@ -14,8 +14,8 @@
 | Secondary Category (לא חובה) | Lifestyle |
 | Age Rating | 4+ (בשאלון מסמנים "None" בכל הסעיפים) |
 | Price | Free |
-| Privacy Policy URL | `https://github.com/danielnotexist404/nircohen/blob/main/store/PRIVACY.md` |
-| Support URL | `https://github.com/danielnotexist404/nircohen/issues` |
+| Privacy Policy URL | `https://github.com/danielnotexist/greenbody/blob/main/store/PRIVACY.md` |
+| Support URL | `https://github.com/danielnotexist/greenbody/issues` |
 | Copyright | `2026 GreenBody` |
 
 ## Promotional Text (עד 170 תווים)
@@ -68,7 +68,7 @@ GreenBody הוא יומן אימונים בעברית מלאה — בונים ת
 • מצב כהה ובהיר, 8 צבעי הדגשה, ו-12 שפות
 
 GreenBody מבוסס על openGym, תוכנה בקוד פתוח (AGPL-3.0). קוד המקור:
-https://github.com/danielnotexist404/nircohen
+https://github.com/danielnotexist/greenbody
 
 אנימציות התרגילים © Gym visual — https://gymvisual.com/
 ```
