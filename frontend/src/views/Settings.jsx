@@ -212,7 +212,7 @@ export default function Settings() {
 
     <div className="dim small" style={{ textAlign: 'center', marginTop: 4, lineHeight: 1.6 }}>
       <Wordmark /> · {t('free & open source (AGPL v3)')}<br />
-      <a href={REPO} target="_blank" rel="noopener">{t('source code')}</a> · {t('exercise data')}: hasaneyldrm/exercises-dataset (CC)
+      <a href={REPO} target="_blank" rel="noopener">{t('source code')}</a> · {t('exercise data')}: hasaneyldrm/exercises-dataset · <span dir="ltr">© Gym visual — gymvisual.com</span>
     </div>
   </div>
 }
