@@ -22,10 +22,12 @@ services:
     restart: "no"
 
   # Passkey auth + per-user data (Node, no framework).
-  # image: prebuilt (docker compose pull). build: from source (docker compose up --build).
+  # GreenBody is built from this repo's source — there are no prebuilt images, and the
+  # upstream openGym images would be the English app without the Hebrew translation.
   api:
-    image: ghcr.io/duartesantos8/opengym-api:latest
+    image: greenbody-api
     build: ./api
+    pull_policy: build
     restart: unless-stopped
     env_file: .env
     environment:
@@ -41,7 +43,8 @@ services:
   # Builds the React frontend (multi-stage) and serves it, proxying /api → api
   # and the exercise media from the shared volume. Single origin for passkeys.
   web:
-    image: ghcr.io/duartesantos8/opengym-web:latest
+    image: greenbody-web
+    pull_policy: build
     build:
       context: .
       dockerfile: web/Dockerfile

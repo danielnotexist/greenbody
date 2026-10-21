@@ -1,5 +1,5 @@
 /* ============================================================================
-   openGym — design system
+   GreenBody — design system
    ----------------------------------------------------------------------------
    Rebuilt around four rules, each aimed at a specific "generated" tell in the
    previous sheet:
@@ -41,6 +41,9 @@
   --yellow:#ffd60a; --teal:#40c8e0; --indigo:#5e5ce6; --pink:#ff375f;
   --purple:#bf5af2; --mint:#63e6e2; --brown:#ac8e68; --grey:#8e8e93;
 
+  /* brand — fixed greens, independent of the per-account accent */
+  --brand-hi:#4ade80; --brand-lo:#16a34a; --brand-leaf:#bbf7d0;
+
   /* accent (per-account, synced) */
   --acc:  var(--green);
   --acc-2:#248a3d;
@@ -56,6 +59,13 @@
   /* motion */
   --ease:cubic-bezier(.32,.72,0,1);
   --fast:140ms; --med:220ms;
+
+  /* type — both families cover Hebrew and Latin and ship inside the app (see main.jsx),
+     so nothing is fetched from a font CDN. Heebo carries running text; Rubik's rounder,
+     sturdier shapes carry titles and the big numbers you read mid-set. Scripts neither
+     covers (Cyrillic, CJK, Devanagari) fall through to the system stack glyph by glyph. */
+  --font-text:'Heebo Variable','Rubik Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+  --font-display:'Rubik Variable','Heebo Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
 
   --sab:env(safe-area-inset-bottom,0px);
   --sat:env(safe-area-inset-top,0px);
@@ -81,6 +91,7 @@
   --purple:#af52de; --mint:#00c7be; --brown:#a2845e; --grey:#8e8e93;
   --acc-2:#248a3d;
   --on-acc:#ffffff;
+  --brand-hi:#22c55e; --brand-lo:#15803d; --brand-leaf:#86efac;
 }
 
 /* accents — Apple's system colours, so a recolour never looks off-system */
@@ -113,7 +124,7 @@ html{
 }
 body{
   background:var(--bg);color:var(--label);
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Segoe UI',Roboto,system-ui,sans-serif;
+  font-family:var(--font-text);
   font-size:17px;line-height:1.29;letter-spacing:-.01em;
   min-height:100vh;overscroll-behavior-y:none;overflow-x:clip;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
@@ -135,6 +146,32 @@ button,.chip,.tile,.item,.wday,.cal-d,.swatch,.hm-c,.lrow,.seg button,.stp butto
   fill:none;stroke:currentColor;stroke-width:var(--icon-stroke);
   stroke-linecap:round;stroke-linejoin:round;
 }
+
+/* titles and readouts take the display face */
+h1,h2,h3,.t-large,.t-title,.t-title2,.card .big,.stat-v,.bw-read,.bwin input,#timer .t,
+.tile .v,.brand{font-family:var(--font-display)}
+
+/* Hebrew has no case and its letterforms are spaced by the type designer — the tight
+   negative tracking tuned for SF Pro (and the positive tracking on all-caps labels)
+   only crowds or scatters it. Inline styles set some of these too, hence !important. */
+:root:lang(he) *{letter-spacing:normal!important}
+/* …and the small all-caps labels would only shout the Latin in them ("KG", "RIR") */
+:root:lang(he) :is(.wday .lbl,.sethead,.cal-h,.today-row .lbl2,.efftbl .hd .n,.efftbl .hd .f){text-transform:none}
+
+/* charts and the year heatmap are time axes laid out by measurement in JS — they read
+   left-to-right (oldest → newest) in every language, the way Hebrew apps draw them too */
+.chart,.chart-i,.hm-wrap{direction:ltr}
+
+[dir="rtl"] .icn.mirror{transform:scaleX(-1)}
+
+/* the GreenBody wordmark: two greens, light into deep */
+.brand{font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;white-space:nowrap;unicode-bidi:isolate}
+.brand-a,.brand-b{-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand-a{background-image:linear-gradient(180deg,var(--brand-leaf),var(--brand-hi))}
+.brand-b{background-image:linear-gradient(180deg,var(--brand-hi),var(--brand-lo))}
+:root[data-theme="light"] .brand-a{background-image:linear-gradient(180deg,var(--brand-hi),var(--brand-lo))}
+:root[data-theme="light"] .brand-b{background-image:linear-gradient(180deg,var(--brand-lo),#166534)}
+.brand-mark{display:block;flex:none}
 
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
 
@@ -215,15 +252,15 @@ h4.sec{
 .sect-f{font-size:13px;color:var(--label-2);padding:7px 4px 0;line-height:1.38}
 
 .lrow{
-  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  display:flex;align-items:center;gap:12px;width:100%;text-align:start;
   padding:11px 14px;min-height:46px;position:relative;color:var(--label);
   background:none;
 }
 /* hairline starts after the icon rail so the list reads as one object */
 .lrow+.lrow::before{
-  content:'';position:absolute;left:14px;right:0;top:0;height:var(--hair);background:var(--sep);
+  content:'';position:absolute;inset-inline:14px 0;top:0;height:var(--hair);background:var(--sep);
 }
-.lrow:has(.lrow-i)+.lrow:has(.lrow-i)::before{left:55px}
+.lrow:has(.lrow-i)+.lrow:has(.lrow-i)::before{inset-inline-start:55px}
 .lrow.tap:active{background:var(--surface-2)}
 .lrow-i{
   width:29px;height:29px;border-radius:7px;flex:none;font-size:18px;
@@ -337,7 +374,7 @@ h4.sec{
 .item{
   display:flex;align-items:center;gap:12px;background:var(--surface);
   border-radius:var(--r-card);padding:10px 12px;min-height:60px;
-  transition:background var(--fast);text-align:left;width:100%;
+  transition:background var(--fast);text-align:start;width:100%;
 }
 .item:active{background:var(--surface-2)}
 .thumb{width:50px;height:50px;border-radius:9px;object-fit:cover;background:#fff;flex:none}
@@ -389,22 +426,22 @@ h4.sec{
 /* --- search field --- */
 .searchf{position:relative;display:flex;align-items:center}
 .searchf .lead{
-  position:absolute;left:11px;font-size:16px;color:var(--label-3);
+  position:absolute;inset-inline-start:11px;font-size:16px;color:var(--label-3);
   pointer-events:none;--icon-stroke:2.1;z-index:1;
 }
-.searchf .field{padding-left:35px;padding-right:36px;background:var(--surface-2);border-radius:10px}
+.searchf .field{padding-inline:35px 36px;background:var(--surface-2);border-radius:10px}
 :root[data-theme="light"] .searchf .field{background:rgba(118,118,128,.12)}
 .searchf .clear{
-  position:absolute;right:8px;width:22px;height:22px;border-radius:50%;
+  position:absolute;inset-inline-end:8px;width:22px;height:22px;border-radius:50%;
   background:var(--label-3);color:var(--bg);display:flex;align-items:center;
   justify-content:center;font-size:11px;--icon-stroke:3;
 }
 /* legacy .search wrapper */
 .search{position:relative}
-.search .input{padding-left:35px;background:var(--surface-2);border-radius:10px}
+.search .input{padding-inline-start:35px;background:var(--surface-2);border-radius:10px}
 :root[data-theme="light"] .search .input{background:rgba(118,118,128,.12)}
 .search>svg{
-  position:absolute;left:11px;top:50%;transform:translateY(-50%);z-index:1;
+  position:absolute;inset-inline-start:11px;top:50%;transform:translateY(-50%);z-index:1;
   width:16px;height:16px;stroke:var(--label-3);fill:none;stroke-width:2.1;stroke-linecap:round;
 }
 
@@ -424,6 +461,9 @@ h4.sec{
 .sw:active .knob{width:31px}
 .sw.on:active .knob{transform:translateX(16px)}
 .sw:disabled{opacity:.4}
+/* RTL: the knob rests at the inline start (the right edge) and travels left */
+[dir="rtl"] .sw.on .knob{transform:translateX(-20px)}
+[dir="rtl"] .sw.on:active .knob{transform:translateX(-16px)}
 
 /* --- segmented control --- */
 /* flex, not grid: an absolutely-positioned child of a GRID container is placed
@@ -437,13 +477,14 @@ h4.sec{
 .seg>button{flex:1 1 0;min-width:0}
 :root[data-theme="light"] .seg{background:rgba(118,118,128,.12)}
 .seg-sel{
-  position:absolute;z-index:0;top:2px;bottom:2px;left:2px;
+  position:absolute;z-index:0;top:2px;bottom:2px;inset-inline-start:2px;
   width:calc((100% - 4px)/var(--n));
   transform:translateX(calc(100% * var(--i)));
   background:var(--surface);border-radius:7px;
   box-shadow:0 3px 8px rgba(0,0,0,.12),0 1px 1px rgba(0,0,0,.06);
   transition:transform var(--med) var(--ease);
 }
+[dir="rtl"] .seg-sel{transform:translateX(calc(-100% * var(--i)))}
 :root[data-theme="light"] .seg-sel{background:#fff}
 .seg button{
   position:relative;z-index:1;padding:6px 8px;font-size:14px;font-weight:500;
@@ -492,7 +533,7 @@ h4.sec{
 .stp .num::-webkit-inner-spin-button{display:none}
 
 /* --- slider --- */
-.sld{position:relative;height:32px;display:flex;align-items:center;cursor:pointer;touch-action:none}
+.sld{direction:ltr;position:relative;height:32px;display:flex;align-items:center;cursor:pointer;touch-action:none}
 .sld-track{
   position:absolute;left:0;right:0;height:6px;border-radius:99px;
   background:var(--surface-3);overflow:hidden;
@@ -534,8 +575,8 @@ h4.sec{
   font-size:12px;font-weight:500;
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
-.exmedia .gifhint{right:9px}
-.exmedia .giftoggle{left:9px}
+.exmedia .gifhint{inset-inline-end:9px}
+.exmedia .giftoggle{inset-inline-start:9px}
 .exmedia .gifhint .icn,.exmedia .giftoggle .icn{font-size:13px}
 /* superset: both exercises are on screen together, so the animations have to give way —
    at 180px you had to scroll a full screen between two exercises done back-to-back */
@@ -553,7 +594,7 @@ h4.sec{
 .sethead .ck-sp{width:30px;flex:none}
 .setrow{display:flex;align-items:center;gap:8px;padding:7px 0;position:relative}
 .setrow+.setrow::before{
-  content:'';position:absolute;left:32px;right:0;top:0;height:var(--hair);background:var(--sep);
+  content:'';position:absolute;inset-inline:32px 0;top:0;height:var(--hair);background:var(--sep);
 }
 .setrow .n{
   width:24px;height:24px;border-radius:50%;background:var(--surface-2);color:var(--label-2);
@@ -624,7 +665,7 @@ h4.sec{
 #timer.rest .head{display:flex;align-items:center;gap:12px}
 #timer.rest .acts{display:flex;align-items:center;gap:8px}
 #timer.rest .acts .btn{padding-top:11px;padding-bottom:11px}   /* sweaty hands, mid-set */
-#timer.rest .acts .skip{margin-left:auto;min-width:84px}
+#timer.rest .acts .skip{margin-inline-start:auto;min-width:84px}
 /* work timer (issue #16): the same bar doing the opposite job — outlined and tinted so a
    glance tells "you are holding this" apart from "you are recovering". */
 #timer.working{border:var(--hair) solid var(--acc)}
@@ -672,7 +713,7 @@ h4.sec{
 .efftbl{background:var(--surface);border-radius:var(--r-lg);overflow:hidden;margin:14px 0 12px}
 .efftbl .r{display:flex;align-items:center;gap:10px;padding:10px 14px;position:relative}
 .efftbl .r+.r::before{
-  content:'';position:absolute;left:14px;right:0;top:0;height:var(--hair);background:var(--sep);
+  content:'';position:absolute;inset-inline:14px 0;top:0;height:var(--hair);background:var(--sep);
 }
 .efftbl .n{
   width:36px;flex:none;text-align:center;font-size:17px;font-weight:600;
@@ -715,7 +756,7 @@ h4.sec{
 .bw-read .u{font-size:19px;color:var(--label-2);font-weight:400;letter-spacing:-.01em}
 .bwin{display:flex;align-items:baseline;justify-content:center;gap:7px;margin:16px 0}
 .bwin input{
-  width:150px;background:none;border:none;outline:none;text-align:right;
+  width:150px;background:none;border:none;outline:none;text-align:end;
   font-size:52px;font-weight:600;letter-spacing:-.035em;color:var(--label);
 }
 .bwin span{color:var(--label-2);font-size:19px}
@@ -783,7 +824,7 @@ h4.sec{
 .mrow .nm{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mrow .bar{width:74px;height:5px;border-radius:3px;background:var(--surface-2);flex:none;overflow:hidden}
 .mrow .bar i{display:block;height:100%;background:var(--acc);border-radius:3px}
-.mrow .v{font-size:12px;color:var(--label-2);min-width:52px;text-align:right;flex:none}
+.mrow .v{font-size:12px;color:var(--label-2);min-width:52px;text-align:end;flex:none}
 /* A headline number inside a card — tile weight without a tile around it, for the pair of
    readings at the top of the effort card. */
 .stat-v{font-size:26px;font-weight:600;letter-spacing:-.026em;line-height:1.1}
@@ -827,7 +868,7 @@ h4.sec{
 .empty{text-align:center;color:var(--label-2);padding:44px 20px;font-size:15px;line-height:1.45}
 .empty .ico{font-size:34px;color:var(--label-2);margin-bottom:12px;display:flex;justify-content:center}
 .steps-list{
-  padding-left:18px;color:var(--label-2);font-size:15px;line-height:1.5;
+  padding-inline-start:18px;color:var(--label-2);font-size:15px;line-height:1.5;
   display:flex;flex-direction:column;gap:9px;
 }
 .steps-list::marker{color:var(--label-3)}
@@ -848,7 +889,7 @@ h4.sec{
 .cal-d i.plan{background:var(--label-3)}
 .cal-d i.ovr{background:var(--orange)}
 .cal-legend{display:flex;gap:14px;justify-content:center;margin-top:12px;font-size:12px;color:var(--label-3)}
-.cal-legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px}
+.cal-legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-inline-end:5px}
 
 /* --- accent swatches --- */
 .swatches{display:flex;gap:12px;flex-wrap:wrap}
@@ -878,7 +919,7 @@ h4.sec{
 .today-row{
   display:flex;align-items:center;justify-content:space-between;gap:10px;
   margin-top:12px;padding:12px 14px;border-radius:var(--r);background:var(--surface-2);
-  transition:background var(--fast);width:100%;text-align:left;
+  transition:background var(--fast);width:100%;text-align:start;
 }
 .today-row:active{background:var(--surface-3)}
 .today-row .lbl2{font-size:11px;font-weight:500;letter-spacing:.03em;text-transform:uppercase;color:var(--label-3)}

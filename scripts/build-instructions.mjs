@@ -6,6 +6,9 @@
 //   node scripts/build-instructions.mjs [path-to-exercises.json]
 //
 // Without an argument the dataset is downloaded from the upstream repo.
+//
+// Hebrew (frontend/src/instr/he.js) is not in the upstream dataset — it is translated in this
+// repo, so it is deliberately absent from LANGS below and never overwritten here.
 
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'

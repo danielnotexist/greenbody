@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
-import { fmtVol, isoOf, todayISO, MONTHS } from '../lib/format.js'
-import { t } from '../lib/i18n.js'
+import { fmtVol, isoOf, todayISO, MONTHS, DAYS, startOfWeek } from '../lib/format.js'
+import { t, weekStart } from '../lib/i18n.js'
 
 // GitHub-style activity heatmap, shaded by time trained per day.
 export default function Heatmap({ S, onDay }) {
@@ -19,7 +19,7 @@ export default function Heatmap({ S, onDay }) {
   const level = a => !a ? 0 : !a.min ? 1 : a.min >= t3 ? 4 : a.min >= t2 ? 3 : a.min >= t1 ? 2 : 1
 
   const today = new Date(); today.setHours(12, 0, 0, 0)
-  const end = new Date(today); end.setDate(today.getDate() - ((today.getDay() + 6) % 7))
+  const end = startOfWeek(today)
   const start = new Date(end); start.setDate(end.getDate() - 52 * 7)
 
   const months = [], cols = []
@@ -37,7 +37,7 @@ export default function Heatmap({ S, onDay }) {
       const a = agg[key]
       const cls = 'hm-c l' + level(a) + (key === todayISO() ? ' today' : '') + (day > today ? ' future' : '')
       cells.push(<div key={d} className={cls}
-        title={key + (a ? ` · ${t(a.n === 1 ? '{0} workout' : '{0} workouts', a.n)} · ${a.min} min · ${fmtVol(a.vol, S.unit)}` : '')}
+        title={key + (a ? ` · ${t(a.n === 1 ? '{0} workout' : '{0} workouts', a.n)} · ${t('{0} min', a.min)} · ${fmtVol(a.vol, S.unit)}` : '')}
         onClick={a ? () => onDay(key) : undefined} />)
     }
     cols.push(<div key={wk} className="hm-col">{cells}</div>)
@@ -45,9 +45,9 @@ export default function Heatmap({ S, onDay }) {
 
   return <>
     <div className="hm-wrap" ref={wrapRef}>
-      <div className="hm-months" style={{ marginLeft: 30 }}>{months}</div>
+      <div className="hm-months" style={{ marginInlineStart: 30 }}>{months}</div>
       <div className="hm-body">
-        <div className="hm-days"><span>{t('Mon')}</span><span /><span>{t('Wed')}</span><span /><span>{t('Fri')}</span><span /><span /></div>
+        <div className="hm-days">{[0, 2, 4].flatMap(r => [<span key={r}>{t(DAYS[(weekStart() + r) % 7])}</span>, <span key={r + 'g'} />])}<span /></div>
         <div className="hm-grid">{cols}</div>
       </div>
     </div>

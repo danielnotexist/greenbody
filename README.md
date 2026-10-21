@@ -1,10 +1,23 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="openGym" width="720">
+<img src="assets/banner.png" alt="GreenBody" width="720">
 
 <br>
 
-**A self-hosted gym & body-weight tracker you actually own.**
+<div dir="rtl">
+
+**GreenBody — יומן אימונים ומעקב משקל גוף שבאמת שייך לך, בעברית מלאה.**
+
+האפליקציה כולה מתורגמת לעברית ומוצגת מימין לשמאל: כל המסכים, 1,324 שמות התרגילים
+והוראות הביצוע שלהם, ההתראות, לוח הניהול והמאמן (שעונה בעברית). השבוע מתחיל ביום ראשון,
+והגופנים — Heebo לטקסט ו-Rubik לכותרות ולמספרים — נארזים בתוך האפליקציה, בלי שום שרת חיצוני.
+עברית היא שפת ברירת המחדל לפרופיל חדש; 11 השפות האחרות עדיין זמינות בהגדרות.
+
+</div>
+
+<br>
+
+**A self-hosted gym & body-weight tracker you actually own** — Hebrew-first fork of openGym.
 
 Plan your week, run guided workouts, track every set and your body weight over time —
 on your phone, synced across devices, behind your own passkey login.
@@ -19,13 +32,18 @@ No account on someone else's server, no subscription, no ads. Just `docker compo
 ![Docker](https://img.shields.io/badge/Docker-compose-2496ED?style=flat-square&logo=docker&logoColor=white)
 ![No tracking](https://img.shields.io/badge/telemetry-none-f472b6?style=flat-square)
 <br>
-![GitHub last commit](https://img.shields.io/github/last-commit/DuarteSantos8/openGym?style=flat-square)
-[![GitHub stars](https://img.shields.io/github/stars/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/stargazers)
-[![GitHub issues](https://img.shields.io/github/issues/DuarteSantos8/openGym?style=flat-square)](https://github.com/DuarteSantos8/openGym/issues)
+![עברית](https://img.shields.io/badge/%D7%A2%D7%91%D7%A8%D7%99%D7%AA-RTL-22c55e?style=flat-square)
 
 </div>
 
 <br>
+
+> ### 🌿 GreenBody
+>
+> GreenBody is openGym rebranded and translated into Hebrew: a right-to-left layout, Hebrew
+> exercise names and instructions for the whole 1,324-exercise library, Sunday-first weeks,
+> bundled Heebo/Rubik fonts and a green identity. It builds on the AI-Coach fork described
+> below, and keeps openGym's AGPL-3.0 license and credits ([NOTICE.md](NOTICE.md)).
 
 > ### 🤖 This is a fork — it adds the AI Coach
 >
@@ -103,17 +121,15 @@ as a home-screen app, passkey sign-in, offline support, sync across your phone a
 You need [Docker](https://docs.docker.com/get-docker/) with Compose.
 
 ```bash
-git clone https://github.com/DuarteSantos8/openGym
-cd openGym
+git clone https://github.com/danielnotexist404/nircohen greenbody
+cd greenbody
 cp .env.example .env
-docker compose pull   # grab prebuilt images (amd64 + arm64) — skip to build from source instead
-docker compose up -d
+docker compose up -d --build
 ```
 
-Open **http://localhost:8080**, tap **Create profile**, and you're in. First launch downloads
-the exercise media (~140 MB) once. Prefer building the images yourself instead of pulling from
-`ghcr.io`? Drop the `pull` step and run `docker compose up -d --build` — you don't need Node or
-a build step locally either way.
+Open **http://localhost:8080**, tap **יצירת פרופיל חדש** (Create new profile), and you're in.
+First launch downloads the exercise media (~140 MB) once. The images are built from this repo
+inside Docker — you don't need Node or a build step locally.
 
 > Want it reachable from your phone over the internet with passkeys? You'll need an HTTPS
 > domain — a two-line change in `.env`. See **[docs/SELF_HOSTING.md](docs/SELF_HOSTING.md)**.
@@ -166,7 +182,7 @@ All via `.env` (see `.env.example`):
 | `RP_ID`       | Hostname passkeys are bound to                       | `localhost`             |
 | `ORIGIN`      | Full URL the app is served from                      | `http://localhost:8080` |
 | `WEB_PORT`    | Host port for the web UI                             | `8080`                  |
-| `RP_NAME`     | Name shown in the passkey prompt                     | `openGym`               |
+| `RP_NAME`     | Name shown in the passkey prompt                     | `GreenBody`             |
 | `ADMIN_UIDS`  | User ids that get the admin dashboard (comma-separated) | *(none)*             |
 | `INVITE_ONLY` | Require an invite code to create a profile           | *(off)*                 |
 | `COACH_DISABLED` | Force the AI Coach off, whatever the admin dashboard says | *(unset)*        |

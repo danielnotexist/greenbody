@@ -2,6 +2,8 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
 import { MOBILE } from './lib/mobile.js'
+import '@fontsource-variable/heebo/wght.css'
+import '@fontsource-variable/rubik/wght.css'
 import './index.css'
 
 createRoot(document.getElementById('root')).render(

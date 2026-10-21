@@ -1,4 +1,4 @@
-// openGym icon set — hand-drawn on a 24×24 grid, stroke-based, single weight.
+// GreenBody icon set — hand-drawn on a 24×24 grid, stroke-based, single weight.
 //
 // Everything is one <svg> primitive with `currentColor`, so an icon inherits the
 // text colour and optical size of whatever it sits in. No emoji anywhere in the
@@ -124,6 +124,10 @@ P.done = P.check
 
 export const ICON_NAMES = Object.keys(P)
 
+// Icons that point along the reading direction — "back", "next", "leave". In a right-to-left
+// language they flip with the layout (index.css), so ‹ still means "back" there.
+const MIRRORED = new Set(['chevronRight', 'chevronLeft', 'signOut'])
+
 /**
  * <Icon name="flame" />           — inherits font-size via `1em` sizing
  * <Icon name="flame" size={28} /> — explicit pixel size
@@ -134,7 +138,7 @@ export default function Icon({ name, size, className = '', style, ...rest }) {
   const s = size ? { width: size, height: size } : null
   return (
     <svg
-      className={'icn ' + className}
+      className={'icn ' + (MIRRORED.has(name) ? 'mirror ' : '') + className}
       viewBox="0 0 24 24"
       aria-hidden="true"
       focusable="false"

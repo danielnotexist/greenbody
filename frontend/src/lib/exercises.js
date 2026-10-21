@@ -1,5 +1,5 @@
 import { EXDB } from './exercises-data.js'
-import { t } from './i18n.js'
+import { t, nameFor } from './i18n.js'
 
 export { EXDB }
 export const EXIDX = {}
@@ -25,6 +25,16 @@ export function registerCustom(list) {
 }
 // Full searchable catalogue — customs first so your own exercises are easy to find.
 export const allExercises = st => [...(st.customEx || []), ...EXDB]
+
+// Does exercise `e` match the (lowercased, trimmed) query `ql`? The English name, target
+// and equipment always match, so "squat" finds the squats in every language; the
+// translated name and terms match too, so "סקוואט" or "משקולות" do as well.
+export function exMatches(e, ql) {
+  if (!ql) return true
+  const has = s => !!s && s.toLowerCase().includes(ql)
+  return has(e.n) || has(nameFor(e)) || has(e.tg) || has(e.eq) || has(e.desc) ||
+    (!!e.tg && has(t(e.tg))) || (!!e.eq && has(t(e.eq))) || (!!e.bp && has(t(e.bp)))
+}
 
 // Media normally sits next to the app (img/ and gif/, mounted into the web container).
 // A build can point them somewhere else — the demo build pulls them off a CDN instead of
