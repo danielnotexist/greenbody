@@ -74,10 +74,10 @@ function WeightInput({ value, setValue, unit }) {
       <button className="bw-pm" onClick={() => onSlide(value + 0.1)} aria-label={t('Increase by 0.1')}><Icon name="plus" /></button>
     </div>
     <div className="chips" style={{ justifyContent: 'center', margin: '8px 0' }}>
-      <button className="chip" onClick={() => onSlide(value - 1)}>−1</button>
-      <button className="chip" onClick={() => onSlide(value - 0.5)}>−0.5</button>
-      <button className="chip" onClick={() => onSlide(value + 0.5)}>+0.5</button>
-      <button className="chip" onClick={() => onSlide(value + 1)}>+1</button>
+      <button className="chip" onClick={() => onSlide(value - 1)}><bdi dir="ltr">−1</bdi></button>
+      <button className="chip" onClick={() => onSlide(value - 0.5)}><bdi dir="ltr">−0.5</bdi></button>
+      <button className="chip" onClick={() => onSlide(value + 0.5)}><bdi dir="ltr">+0.5</bdi></button>
+      <button className="chip" onClick={() => onSlide(value + 1)}><bdi dir="ltr">+1</bdi></button>
     </div>
     <Slider value={sv} min={W_LO} max={W_HI} step={0.5} onChange={onSlide} />
   </>
