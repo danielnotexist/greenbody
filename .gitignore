@@ -20,3 +20,6 @@ node_modules/
 CLAUDE.md
 AGENTS.md
 graphify-out/
+
+# downloaded Flow images — only the processed frames are committed
+media-gen/raw/
